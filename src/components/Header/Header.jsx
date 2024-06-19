@@ -6,7 +6,6 @@ export const Header = ({ mastersIds, onChangeSelectedId, onUpdate, selectedId, m
   const user = localStorage.getItem("user");
   const jsonUser = JSON.parse(user);
 
-  //Кнопочка "Удалить" удаляет все заявки с сервера
   const onDeleteAll = async () => {
     const response = await fetch("https://diploma-be.onrender.com/api/requests", {
       method: "DELETE",
@@ -16,7 +15,6 @@ export const Header = ({ mastersIds, onChangeSelectedId, onUpdate, selectedId, m
     }
   };
 
-  //Функция для загрузки json файла с заявками на сервер
   const onChange = async ({ target }) => {
     const file = target.files[0];
     if (file) {
@@ -34,23 +32,15 @@ export const Header = ({ mastersIds, onChangeSelectedId, onUpdate, selectedId, m
     }
   };
 
-  //Кнопочка "Выход" удаляет пользователя из localStorage
   const logOut = () => {
     localStorage.removeItem("user");
     navigate("/login");
   };
 
-  const handleUpload = () => {
-    // Возможно, ты хочешь выполнить отправку файла или другую логику здесь
-    onUpload();
-  };
-
-  // const mastersNames = ["Пупкин В","Сидоров П","Ломов И","Пашков П","Мишкин К"];
-
-  return (// Структура header
+  return (
     <div className={header.header}>
       <div className={header.sides}>
-        {!jsonUser?.id? (
+        {!jsonUser?.id ? (
           <>
             <div className={header.containerSel}>
               <select className={header.sel} value={selectedId} onChange={onChangeSelectedId}>
@@ -64,14 +54,14 @@ export const Header = ({ mastersIds, onChangeSelectedId, onUpdate, selectedId, m
                     </option>
                   ) : (
                     <option key={masterId} value={masterId}>
-                      {mastersNames[masterId-1]}
+                      {mastersNames[masterId - 1]}
                     </option>
                   )
                 )}
               </select>
             </div>
             <div className={header.containerBtn} onClick={onDeleteAll}>
-                <button className={header.btn}>Удалить все</button>
+              <button className={header.btn}>Удалить все</button>
             </div>
             <div className={header.containerBtn}>
               <label className={header.btn} htmlFor="json">
@@ -84,7 +74,7 @@ export const Header = ({ mastersIds, onChangeSelectedId, onUpdate, selectedId, m
       </div>
       <div className={header.sides}>
         <div className={`${header.containerBtn} ${header.btnToLeft}`} onClick={logOut}>
-            <button className={header.btnLeave}>Выйти</button>
+          <button className={header.btnLeave}>Выйти</button>
         </div>
       </div>
     </div>

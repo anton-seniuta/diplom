@@ -2,23 +2,22 @@
   padding: 8px;
   border-radius: 20px;
   margin-bottom: 10px;
-  }
-
-.requestContainer:first-child{
-  background-color: rgb(219, 219, 219) !important;
-}
-.requestContainer:last-child{
-  background-color: rgb(219, 219, 219) !important;
 }
 
-.listItemColumn{
+.requestContainer:first-child {
+  background-color: rgb(219, 219, 219) !important;
+}
+.requestContainer:last-child {
+  background-color: rgb(219, 219, 219) !important;
+}
+
+.listItemColumn {
   justify-content: center;
   text-align: center;
-  margin:  4px 0 0 0;
+  margin: 4px 0 0 0;
   flex: 1;
 }
 
-
-.listItemRequest{
+.listItemRequest {
   display: flex;
 }

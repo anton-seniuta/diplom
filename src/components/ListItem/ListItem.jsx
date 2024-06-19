@@ -1,6 +1,5 @@
 import listItem from "./listItem.module.css";
 
-// Структура заявки
 export const ListItem = ({ contractNumber, phoneNumber, name, address, contactNumber, date, timeInterval, about, id, masterId, selected, onClick, mastersNames }) => {
   return (
     <li className={listItem.requestContainer} onClick={() => onClick(id)}>
@@ -22,7 +21,7 @@ export const ListItem = ({ contractNumber, phoneNumber, name, address, contactNu
           <br />
           {timeInterval}
         </div>
-        <div className={listItem.listItemColumn}>{mastersNames[masterId-1]}</div>
+        <div className={listItem.listItemColumn}>{mastersNames[masterId - 1]}</div>
       </div>
     </li>
   );
