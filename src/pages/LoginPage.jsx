@@ -4,7 +4,7 @@ import "./LoginPage.css";
 import "./util.css";
 
 export default function LoginPage() {
-  const [login, setLogin] = useState(""); 
+  const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const onChangeLogin = ({ target: { value } }) => {
     setLogin(value);
@@ -13,7 +13,7 @@ export default function LoginPage() {
     setPassword(value);
   };
 
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const user = localStorage.getItem("user");
   useEffect(() => {
     if (user) {
@@ -33,14 +33,17 @@ export default function LoginPage() {
       setLogin("");
       setPassword("");
       navigate("/");
+    } else {
+      alert("Ошибка авторизации");
     }
   };
+
   return (
     <div className="limiter">
       <div className="container-login100">
         <div className="wrap-login100 p-t-85 p-b-20">
           <form className="login100-form validate-form" onSubmit={handleSubmit}>
-          <span className="login100-form-title p-b-70"> Кого сегодня подключает Белтелеком? </span>
+            <span className="login100-form-title p-b-70"> Кого сегодня подключает Белтелеком? </span>
             <div className="wrap-input100 validate-input m-t-85 m-b-35" data-validate="Enter username">
               <input className={`input100 ${login ? "has-val" : ""}`} type="text" value={login} required onChange={onChangeLogin} />
               <span className="focus-input100" data-placeholder="Логин"></span>
@@ -55,7 +58,10 @@ export default function LoginPage() {
             <ul className="login-more p-t-190">
               <li className="m-b-8">
                 <span className="txt1"> Забыли </span>
-                <a href="#" className="txt2"> Логин / Пароль? </a>
+                <a href="#" className="txt2">
+                  {" "}
+                  Логин / Пароль?{" "}
+                </a>
                 <span className="txt1"> Тренируйте память. </span>
               </li>
               <li>
