@@ -9,9 +9,10 @@ import "./MainPage.css";
 const mapState = {
   center: [53.906761, 27.561822],
   zoom: 5,
-}; 
+};
 
 function Main() {
+  const mastersNames = ["Пупкин В", "Сидоров П", "Ломов И", "Пашков П", "Мишкин К"];
   const navigate = useNavigate();
   const user = localStorage.getItem("user");
   const [jsonUser, setJsonUser] = useState({});
@@ -39,7 +40,6 @@ function Main() {
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [selectedMasterId, setSelectedMasterId] = useState("all");
-  const [selectedRequestCoords, setSelectedRequestCoords] = useState([]);
 
   const mastersIds = useMemo(() => {
     return [...new Set(requests.map((request) => request.masterId))].sort((a, b) => a - b);
@@ -88,7 +88,6 @@ function Main() {
     }
   };
 
-  //Проверяет поддержку геолокации в браузере.
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((position) => {
@@ -106,9 +105,6 @@ function Main() {
     const geocode = "минск, проспект Независимости, 119";
     const t = ymaps?.geocode?.(geocode);
     console.log(`geocode for ${geocode}:`, t);
-    if (selectedRequest) {
-      getCoordsByAddress(selectedRequest.address).then(setSelectedRequestCoords);
-    }
   }, [selectedRequest]);
 
   useEffect(() => {
@@ -120,24 +116,52 @@ function Main() {
     }
     const allCoords = filteredRequests.map(({ address }) => address);
 
-    console.log("allCoords=", allCoords);
+    if (myCoords.length === 2) {
+      allCoords.unshift(myCoords.join(","));
+    }
+
     if (ymaps) {
       const route = ymaps.route;
       route(allCoords, { mapStateAutoApply: true }).then((r) => {
         try {
+          // const cleanText = (text)=> text.replaceAll("&#160", "").replaceAll(";", " ");
+          // r.getPaths().each((path) => {
+          //   const segments = path.getSegments();
+          //   segments.each((segment) => {
+          //     const humanJamsTime = segment.properties.get('humanJamsTime');
+          //     segment.properties.set('cleanHumanJamsTime', cleanText(humanJamsTime));
+          //     segment.properties.set('humanLength', segment.properties.get('distance').text);
+          //   });
+          // });
+
+          const balloonContentLayout = ymaps.templateLayoutFactory.createClass(`
+            <div style="padding: 10px; white-space: nowrap; max-width: 300px; border: 1px solid black;">
+              <strong>Расстояние:</strong> {{ properties.humanLength }}<br/>
+              <strong>Время:</strong> {{ properties.cleanHumanJamsTime }}
+            </div>
+          `);
+          r.getWayPoints().each((wayPoint, index) => {
+            if (index === 0) {
+              wayPoint.properties.set("iconContent", "Я здесь!");
+            } else {
+              wayPoint.properties.set("iconContent", `${index}`);
+            }
+            wayPoint.options.set("balloonContentLayout", balloonContentLayout);
+            wayPoint.options.set("preset", "islands#blackStretchyIcon");
+            wayPoint.options.set("hideIconOnBalloonOpen", false);
+          });
           r.getPaths().options.set({
-            balloonContentLayout: ymaps.templateLayoutFactory.createClass("{{ properties.humanJamsTime }}"),
+            balloonContentLayout: balloonContentLayout,
             strokeColor: "0000ff",
-            opacity: 0.7,
+            opacity: 0.5,
           });
         } catch (err) {
           console.log("set options: ", err);
         }
-        //console.log("r: ", r.getHumanLength().replaceAll("&#160", "").replaceAll(";", " "), r.getHumanTime().replaceAll("&#160", "").replaceAll(";", " "), r.getPaths().options);
         map.current.geoObjects.add(r);
       });
     }
-  }, [ymaps, selectedMasterId]);
+  }, [ymaps, selectedMasterId, myCoords]);
 
   if (!requests.length && loading) {
     return <div className="loader"></div>;
@@ -157,24 +181,13 @@ function Main() {
     }
   };
 
-  const mastersNames = ["Пупкин В","Сидоров П","Ломов И","Пашков П","Мишкин К"];
-
   return (
     <>
-      <Header onChangeSelectedId={handleChangeSelectedId} mastersIds={mastersIds} onUpdate={onUpdate} selectedId={selectedMasterId} mastersNames={mastersNames}/>
+      <Header onChangeSelectedId={handleChangeSelectedId} mastersIds={mastersIds} onUpdate={onUpdate} selectedId={selectedMasterId} mastersNames={mastersNames} />
       <div className="app">
-        <List requests={filteredRequests} selectedRequest={selectedRequest} onSelect={handleChoiceRequest} mastersNames={mastersNames}/>
+        <List requests={filteredRequests} selectedRequest={selectedRequest} onSelect={handleChoiceRequest} mastersNames={mastersNames} />
         <div className="map">
-          <Map className="mapContainer" state={mapState} instanceRef={map} key={selectedMasterId}>
-            <Placemark
-              key={12}
-              properties={{
-                iconContent: "Старт",
-                preset: "islands#yellowStretchyIcon",
-              }}
-              geometry={myCoords}
-            />
-          </Map>
+          <Map className="mapContainer" state={mapState} instanceRef={map} key={selectedMasterId}></Map>
           {selectedRequest && <pre>{JSON.stringify(selectedRequest)}</pre>}
           {selectedRequest && <ListItemModal selectedRequest={selectedRequest} onClose={onClose} onDelete={handleDeleteItem} />}
         </div>
