@@ -50,7 +50,7 @@ export const Header = ({ mastersIds, onChangeSelectedId, onUpdate, selectedId, m
   return (// Структура header
     <div className={header.header}>
       <div className={header.sides}>
-        {!jsonUser.id ? (
+        {!jsonUser?.id? (
           <>
             <div className={header.containerSel}>
               <select className={header.sel} value={selectedId} onChange={onChangeSelectedId}>
