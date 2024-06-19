@@ -3,7 +3,7 @@ import MainPage from './pages/MainPage';
 import LoginPage from './pages/LoginPage';  
 // Импортирует компоненты для настройки маршрутизации библиотеки react-router-dom
 import {  
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route
 } from "react-router-dom";  
