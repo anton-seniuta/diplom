@@ -25,7 +25,6 @@ function Main() {
   }, []);
 
   useEffect(() => {
-    console.log(jsonUser);
     if (jsonUser.id) {
       setSelectedMasterId(jsonUser.id);
     } else {
@@ -46,7 +45,6 @@ function Main() {
   }, [requests]);
 
   const filteredRequests = useMemo(() => {
-    console.log(selectedMasterId);
     if (selectedMasterId === "all") {
       return requests;
     }
@@ -104,13 +102,9 @@ function Main() {
   useEffect(() => {
     const geocode = "минск, проспект Независимости, 119";
     const t = ymaps?.geocode?.(geocode);
-    console.log(`geocode for ${geocode}:`, t);
   }, [selectedRequest]);
 
   useEffect(() => {
-    if (!selectedMasterId) {
-      return;
-    }
     if (selectedMasterId === "all") {
       return;
     }
@@ -124,34 +118,15 @@ function Main() {
       const route = ymaps.route;
       route(allCoords, { mapStateAutoApply: true }).then((r) => {
         try {
-          // const cleanText = (text)=> text.replaceAll("&#160", "").replaceAll(";", " ");
-          // r.getPaths().each((path) => {
-          //   const segments = path.getSegments();
-          //   segments.each((segment) => {
-          //     const humanJamsTime = segment.properties.get('humanJamsTime');
-          //     segment.properties.set('cleanHumanJamsTime', cleanText(humanJamsTime));
-          //     segment.properties.set('humanLength', segment.properties.get('distance').text);
-          //   });
-          // });
-
-          const balloonContentLayout = ymaps.templateLayoutFactory.createClass(`
-            <div style="padding: 10px; white-space: nowrap; max-width: 300px; border: 1px solid black;">
-              <strong>Расстояние:</strong> {{ properties.humanLength }}<br/>
-              <strong>Время:</strong> {{ properties.cleanHumanJamsTime }}
-            </div>
-          `);
           r.getWayPoints().each((wayPoint, index) => {
             if (index === 0) {
               wayPoint.properties.set("iconContent", "Я здесь!");
             } else {
               wayPoint.properties.set("iconContent", `${index}`);
             }
-            wayPoint.options.set("balloonContentLayout", balloonContentLayout);
             wayPoint.options.set("preset", "islands#blackStretchyIcon");
-            wayPoint.options.set("hideIconOnBalloonOpen", false);
           });
           r.getPaths().options.set({
-            balloonContentLayout: balloonContentLayout,
             strokeColor: "0000ff",
             opacity: 0.5,
           });
