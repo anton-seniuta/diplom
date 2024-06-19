@@ -38,6 +38,10 @@ export default function LoginPage() {
     }
   };
 
+  const showPassword = () => {
+    alert("admin/admin vova/pup1234 petya/sid1234 ivan/lom1234 pavel/pas1234 kolya/mis1234")
+  }
+
   return (
     <div className="limiter">
       <div className="container-login100">
@@ -54,11 +58,11 @@ export default function LoginPage() {
             </div>
             <div className="container-login100-form-btn">
               <button className="login100-form-btn">Войти</button>
-            </div>
+            </div>  
             <ul className="login-more p-t-190">
               <li className="m-b-8">
                 <span className="txt1"> Забыли </span>
-                <a href="#" className="txt2">
+                <a href="#" className="txt2" onClick={showPassword}>
                   {" "}
                   Логин / Пароль?{" "}
                 </a>
