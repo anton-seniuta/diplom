@@ -25,7 +25,8 @@ export const Header = ({ mastersIds, onChangeSelectedId, onUpdate, selectedId, m
         body: formData,
       });
       const data = await response.json();
-      console.log(data);
+        console.log(data);
+        alert(data.message);
       if (data.message === "Success") {
         onUpdate();
       }
